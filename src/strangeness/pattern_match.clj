@@ -1,3 +1,9 @@
+;;
+;; Pattern matching for clojure
+;; Licensed under Eclipse Public License 1.0
+;; (http://opensource.org/licenses/eclipse-1.0.php)
+;;
+
 (ns strangeness.pattern-match
   "Macros for pattern matching clojure sequences."
   {:author "Alexander Konstantinov"})

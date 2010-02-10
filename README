@@ -1,0 +1,25 @@
+--A pattern-matching macro for Clojure--
+
+Although there already is a macro available for that purpose (http://www.brool.com/index.php/pattern-matching-in-clojure), that implementation has some limitations which i tried to surpass.
+
+(defn categorize [thing]
+  (match thing
+    [a a a] (str "three times the same thing: " a)
+    [_ _] "a two element sequence"
+    [_ _ _ _ _ & _] "a long sequence"
+    [& _ :as s] (str "some other sequence: " s)
+    n :when (number? n) (str "a number: " n)
+    {:person :type, :keys [age name]} (str name \( age \))
+    o (str "something else: " (pr-str o))))
+
+As you can see, this macro allows to match on sequential and associative structures and supports the same directives as the ones used to destructure binding forms.
+
+--What is different/ why another one?--
+
+Because the other macro uses the built-in destructuring, it tries to destructure values before checking if they can be destructured at all. Whereas this macro checks if the structure is of the expected type first and skips to the next clause if it is not. Futhermore it allows to destructure maps and deftypes and uses the (:keyword thing alt) syntax if possible, which means that it will benefit from optimisations for keyword lookup.
+
+Additionally there is a (if-match <expr> pattern <then> <else>?) macro, which provides the same pattern matching functionality, but is limited to a single pattern only.
+
+--Drawbacks/Limitations--
+
+Because this macro is fail-fast the action expressions aren’t in tail position (there is no ‘break’ statement in clojure), so you cannot use the macro for concise recursive definitions.
